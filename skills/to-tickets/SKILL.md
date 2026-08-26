@@ -7,13 +7,13 @@ description: Split a feature PLAN.md into small, vertical, self-contained ticket
 
 Compile `docs/features/<feature-slug>/PLAN.md` into self-contained implementation tickets under `docs/features/<feature-slug>/tickets/`.
 
-Each ticket is an execution context for a fresh conversation. An implementing agent must be able to complete it without reading `PLAN.md` or another ticket for context. Other tickets may be opened only to inspect dependency status.
+Each ticket is an execution context for a fresh conversation. An implementing agent must be able to complete it without reading `PLAN.md` or another ticket for context. For a dependency, retrieve only its `Status` field; do not open or read the rest of that ticket.
 
 Do not load `domain-modeling` or read `CONTEXT.md`. A plan produced by `to-plan` already uses canonical vocabulary; compile all context needed for execution into each ticket.
 
 ## Process
 
-1. Read the complete plan and inspect the relevant codebase where needed.
+1. Read the complete plan. Where repository knowledge is needed, delegate all codebase searching and inspection to the `explore` subagent; do not inspect application code in the primary conversation.
 2. Break the work into narrow vertical slices.
 3. Ensure every slice delivers observable behavior through all necessary layers and can be verified independently.
 
@@ -61,6 +61,10 @@ Use exactly this structure and no additional sections:
 
 - [ ] <Acceptance criterion.>
 - [ ] <Acceptance criterion.>
+
+## Commit
+
+Pending.
 ```
 
 For blocked tickets, identify every direct blocker by number and title:
@@ -71,7 +75,7 @@ For blocked tickets, identify every direct blocker by number and title:
 
 Write tickets in the same language as the plan. Start every ticket as `pending` with every checkbox unchecked.
 
-The only valid statuses are `pending`, `in_progress`, `in_review`, `completed`, and `discarded`. Do not create labels, tracker metadata, comments sections, central status indexes, commits, or additional files.
+The only valid statuses are `pending`, `in_progress`, `in_review`, `completed`, and `discarded`. Keep `Commit` as `Pending.` until `implement` completes the approved ticket and records the implementation commit hash. Do not create labels, other tracker metadata, comments sections, central status indexes, commits, or additional files.
 
 | Label         | Meaning                             |
 | ------------- | ----------------------------------- |

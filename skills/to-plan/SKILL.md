@@ -17,7 +17,7 @@ Derive a short kebab-case feature slug from the agreed work unless the user prov
 1. Use the current conversation as the primary source.
 2. Load `domain-modeling` in `capture` mode. Create or minimally update root `CONTEXT.md` only with durable domain terms explicitly resolved in the conversation.
 3. If a proposed term conflicts with the existing glossary, stop and report the unresolved conflict instead of guessing or writing the plan.
-4. Use the resulting canonical vocabulary and existing codebase knowledge to keep terminology and decisions accurate.
+4. Use the resulting canonical vocabulary and existing codebase knowledge to keep terminology and decisions accurate. If codebase facts must be discovered or verified, delegate all repository searching and inspection to the `explore` subagent; do not inspect application code in the primary conversation.
 5. Create the feature directory and `PLAN.md`.
 6. Preserve product intent, agreed constraints, and testing decisions without implementation trivia.
 7. Do not generate phases or tickets. That belongs to `to-tickets` in a fresh conversation.

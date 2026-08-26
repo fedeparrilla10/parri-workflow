@@ -7,13 +7,15 @@ description: Review one implemented feature ticket against its acceptance criter
 
 Review the changes for exactly one implemented ticket. This is a focused pre-review for the human, not a substitute for human approval.
 
-Work in the current conversation without spawning subagents. Use the selected ticket as the complete product specification and do not read its parent `PLAN.md`.
+Read the selected ticket directly and use it as the complete product specification. Do not read its parent `PLAN.md` or any other ticket.
+
+Delegate every repository search and all inspection of application code to the `explore` subagent. Keep raw diffs and source contents out of the primary conversation: ask `explore` for concise findings with file-and-line evidence, then use that evidence to perform the review and write the result.
 
 ## Inputs
 
-Require the path to the selected ticket. Review the current phase changes against `HEAD`, including staged changes, unstaged changes, and untracked files.
+Require the path to the selected ticket. Have `explore` inspect the current ticket changes against `HEAD`, including staged changes, unstaged changes, and untracked files.
 
-Read repository instructions and documented standards when present, such as `AGENTS.md`, `CONTRIBUTING.md`, or coding-standard documents. Repository rules override the smell baseline below.
+Read repository instructions directly when they are automatically supplied in the conversation. Have `explore` locate and summarize any other documented standards, such as `CONTRIBUTING.md` or coding-standard documents. Repository rules override the smell baseline below.
 
 If the diff introduces or renames domain-facing symbols, and a root `CONTEXT.md` exists, load `domain-modeling` in `check` mode. Report names that conflict with canonical terms or use `_Avoid_` alternatives as recommendations. Do not load it for changes that do not affect domain language, and never update the glossary during review.
 
@@ -29,7 +31,7 @@ Check whether:
 
 ## Standards and code smells
 
-Report violations of documented repository standards. Also inspect the diff for this Fowler-inspired baseline:
+Report violations of documented repository standards. Inspect the diff for this Fowler-inspired baseline and return only supported findings with file-and-line evidence:
 
 - **Mysterious Name**: a function, variable, parameter, or type whose name does not reveal its purpose.
 - **Duplicated Code**: the same logic shape appears in more than one place.
