@@ -9,13 +9,7 @@ Review the changes for exactly one implemented ticket. This is a focused pre-rev
 
 Read the selected ticket directly and use it as the complete product specification. Do not read its parent `PLAN.md` or any other ticket.
 
-Delegate every repository search and all inspection of application code to the `explore` subagent. Keep raw diffs and source contents out of the primary conversation: ask `explore` for concise findings with file-and-line evidence, then use that evidence to perform the review and write the result.
-
 ## Inputs
-
-Require the path to the selected ticket. Have `explore` inspect the current ticket changes against `HEAD`, including staged changes, unstaged changes, and untracked files.
-
-Read repository instructions directly when they are automatically supplied in the conversation. Have `explore` locate and summarize any other documented standards, such as `CONTRIBUTING.md` or coding-standard documents. Repository rules override the smell baseline below.
 
 If the diff introduces or renames domain-facing symbols, and a root `CONTEXT.md` exists, load `domain-modeling` in `check` mode. Report names that conflict with canonical terms or use `_Avoid_` alternatives as recommendations. Do not load it for changes that do not affect domain language, and never update the glossary during review.
 

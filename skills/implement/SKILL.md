@@ -9,8 +9,6 @@ Implement exactly the ticket selected by the user. Treat it as the complete exec
 
 Before changing anything, retrieve only the `Status` field from every ticket listed in `Blocked by`. Do not open or read any other part of those tickets. Continue only when all blockers are `completed`. Otherwise, stop without modifying files and report each incomplete blocker and its status.
 
-Delegate every codebase search, architectural investigation, and discovery of relevant files or existing patterns to the `explore` subagent. Keep that exploration out of the primary conversation. The implementing agent may directly read the selected ticket, repository instructions, and the specific files identified as necessary to edit, and may run validation commands itself.
-
 Implement the smallest, clearest, and most direct solution that satisfies the ticket. Base decisions on what was found in the repository and remain consistent with its conventions, structure, and existing patterns. When several coherent alternatives exist, choose the simplest. Prioritize concise, readable code; when debating whether to create two files or solve the work clearly in one, choose one. Separate responsibilities only when there is a concrete need. For example, a controller may receive, process, and respond to requests; when business logic justifies separation, it may delegate that logic to a service.
 
 Change `pending` to `in_progress`, implement only the selected ticket, and verify every acceptance criterion. Mark a checkbox `[x]` only after verification. Run typechecking regularly, relevant tests regularly, and the full test suite once at the end.
