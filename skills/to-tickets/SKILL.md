@@ -13,7 +13,7 @@ Do not load `domain-modeling` or read `CONTEXT.md`. A plan produced by `to-plan`
 
 ## Process
 
-1. Read the complete plan. Where repository knowledge is needed, delegate all codebase searching and inspection to the `explore` subagent; do not inspect application code in the primary conversation.
+1. Read the complete plan. Where repository knowledge is needed, delegate all codebase searching and inspection to the `explore` subagent; do not inspect application code in the primary conversation. Use `quick` thoroughness for a concrete lookup and `medium` only when the answer requires tracing multiple files or layers. Use `very thorough` only when the user explicitly requests it.
 2. Break the work into narrow vertical slices.
 3. Ensure every slice delivers observable behavior through all necessary layers and can be verified independently.
 

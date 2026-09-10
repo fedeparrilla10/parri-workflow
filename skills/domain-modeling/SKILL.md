@@ -46,7 +46,7 @@ When capturing resolved language:
 5. Apply the smallest possible edit and preserve unrelated entries.
 6. Report the terms added, changed, or left unchanged.
 
-Never infer a glossary from a broad codebase scan. Code can confirm or contradict a proposed definition, but code alone does not establish product meaning. If code must be inspected for that limited purpose, delegate all searching and inspection to the `explore` subagent; do not inspect application code in the primary conversation.
+Never infer a glossary from a broad codebase scan. Code can confirm or contradict a proposed definition, but code alone does not establish product meaning. If code must be inspected for that limited purpose, delegate all searching and inspection to the `explore` subagent; do not inspect application code in the primary conversation. Use `quick` thoroughness for a concrete lookup and `medium` only when the answer requires tracing multiple files or layers. Use `very thorough` only when the user explicitly requests it.
 
 Never replace a conflicting definition silently. Report the conflict and require the human to resolve it through `grill-me` before writing.
 
