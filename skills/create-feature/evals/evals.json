@@ -1,0 +1,40 @@
+{
+  "skill_name": "create-feature",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/create-feature --direct --no-sdd \"Fix the typo in the checkout button\"",
+      "expected_output": "Creates features.json when absent and registers F-001 as pending with sdd false and observable acceptance criteria, without creating a feature directory.",
+      "files": [],
+      "assertions": [
+        "Creates valid features.json containing exactly one feature with id F-001 and status pending.",
+        "Does not create features/ or a feature directory because SDD is disabled.",
+        "Uses sdd false because --no-sdd overrides automatic classification.",
+        "Does not create requirements.md, design.md, tasks.md, or product code."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Create a feature to filter products by marketplace, preserve the filter during pagination, and keep current behavior when no marketplace is selected.",
+      "expected_output": "Appends the next feature ID, captures all three outcomes, and selects sdd true because behavior spans filtering and pagination.",
+      "files": [],
+      "assertions": [
+        "Preserves existing features, appends the next ID after the highest numeric feature ID, and creates exactly one matching features/<feature-id>-<slug> directory because SDD is enabled.",
+        "Acceptance criteria cover marketplace selection, matching results, pagination persistence, and unchanged behavior without a filter.",
+        "Uses sdd true and gives a short reason based on non-trivial cross-cutting behavior."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/create-feature --sdd --no-sdd \"Validate customer_id\"",
+      "expected_output": "Rejects contradictory SDD overrides and does not modify features.json.",
+      "files": [],
+      "assertions": [
+        "Reports that --sdd and --no-sdd cannot be combined.",
+        "Leaves features.json unchanged.",
+        "Does not create a feature directory.",
+        "Does not create specifications or product code."
+      ]
+    }
+  ]
+}

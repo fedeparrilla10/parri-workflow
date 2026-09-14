@@ -1,0 +1,23 @@
+{
+  "skill_name": "code-architecture",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Usa code-architecture en este proyecto. Tenemos lógica de negocio repartida entre controladores, servicios y modelos, y no sé cuál debería ser el criterio. Quiero acordar cómo construir las próximas features sin reescribir todo lo anterior. Todavía no elegí una arquitectura.",
+      "expected_output": "Inspecciona una muestra representativa, distingue situación actual de arquitectura deseada y plantea una recomendación con una pregunta concreta. No escribe decisiones no aprobadas ni refactoriza código.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Usa code-architecture para documentar lo que ya acordamos en este proyecto nuevo: controladores para HTTP, servicios para casos de uso y acceso directo al ORM desde los servicios; no queremos repositorios genéricos. Validación de entrada en la capa HTTP y reglas de negocio en servicios. Escribe docs/engineering.md en español. No modifiques AGENTS.md sin preguntarme.",
+      "expected_output": "Genera una guía breve con arquitectura y convenciones acordadas, sin otra entrevista ni capas inventadas. No describe archivos propuestos como existentes y pide permiso antes de añadir la referencia a AGENTS.md.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Usa code-architecture para actualizar docs/engineering.md. Mantén todas las decisiones salvo esta: las integraciones externas se encapsularán en adaptadores específicos, sin interfaz compartida hasta que haya una segunda implementación real. Aplícalo al código nuevo; el antiguo se adapta solo cuando la tarea lo necesite. AGENTS.md ya referencia docs/engineering.md.",
+      "expected_output": "Actualiza únicamente las reglas afectadas, conserva el resto de la guía, no duplica la referencia en AGENTS.md y no cambia código, planes ni tickets.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "skill_name": "setup-harness",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Set up the harness in this empty project directory, which is not a Git repository.",
+      "expected_output": "Stops before creating files and reports that the project must be a Git repository.",
+      "files": [],
+      "assertions": [
+        "Checks that git is available and git rev-parse --is-inside-work-tree succeeds before editing files.",
+        "Does not run git init.",
+        "Does not create harness artifacts when the Git check fails."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Set up the harness in this initialized Git project with one pending SDD feature F-001 named Add dark mode.",
+      "expected_output": "Creates the harness skeleton, repairs the missing SDD feature directory, and generates an init.sh that validates Git and SDD artifacts.",
+      "files": [],
+      "assertions": [
+        "Creates features/F-001-add-dark-mode/.gitkeep because the registered feature uses SDD.",
+        "Generated init.sh fails outside a Git work tree.",
+        "Generated init.sh requires exactly one features/F-001-* directory for the SDD feature.",
+        "Generated init.sh validates SDD artifacts inside the matching feature directory."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Set up the harness in this initialized Git project with no SDD features.",
+      "expected_output": "Creates the global harness state without creating features/.",
+      "files": [],
+      "assertions": [
+        "Does not create features/ when no registered feature uses SDD.",
+        "Generated init.sh does not require a feature directory for non-SDD features."
+      ]
+    }
+  ]
+}
