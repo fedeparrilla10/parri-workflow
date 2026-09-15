@@ -9,7 +9,7 @@ Initialize the harness in the current project without creating a feature or modi
 
 ## Inspect first
 
-Read the project structure, applicable `AGENTS.md`, package manifests, test configuration, and existing engineering documentation. Determine the project's real verification commands from declared scripts and established tooling. Do not invent commands or install dependencies.
+Read the project structure, applicable `AGENTS.md`, and existing engineering documentation. Do not inspect or execute project commands, package-manager scripts, tests, framework CLIs, database operations, deployment tooling, or external services.
 
 Require Git before making changes. Verify that `git` is available and that the project root is inside a work tree with `git rev-parse --is-inside-work-tree`. If either check fails, stop and report that the user must initialize or open the project as a Git repository; do not run `git init`.
 
@@ -39,9 +39,7 @@ Initialize `progress/history.md` as:
 # History
 ```
 
-Do not overwrite or reset existing state. If `features.json` exists but is invalid, stop and report the validation error. Normalize valid legacy feature entries without a `brief` field by adding `"brief": null`; preserve every other field and value.
-
-For every SDD feature already registered, require one directory named `features/<feature-id>-<slug>/`. If none exists, create it with `.gitkeep` using the same slug rules as `create-feature`; if more than one directory has the same `<feature-id>-` prefix, stop and report the ambiguity. Do not create `features/` when no registered feature uses SDD. Preserve every existing feature artifact.
+Do not overwrite or reset existing state. If `features.json` exists but is invalid JSON, stop and report the validation error. Preserve every existing feature entry and artifact unchanged. Setup does not create, normalize, or validate features; feature registration belongs to its dedicated workflow. Do not load feature-registration skills during setup.
 
 ## Engineering guide
 
@@ -51,25 +49,10 @@ Ensure the applicable project `AGENTS.md` tells designing, implementing, and rev
 
 ## Generate init.sh
 
-Create one executable root `init.sh`; never create `verify.sh`. It must use reliable exit codes and:
-
-1. Require `git`, verify that the project root is inside a Git work tree, and fail clearly otherwise.
-2. Require `features.json`, `progress/current.md`, `progress/history.md`, and `docs/engineering.md`.
-3. Parse `features.json` with an already available standard runtime.
-4. Accept only `pending`, `spec_ready`, `in_progress`, and `done`.
-5. Validate unique `F-NNN` IDs and required feature fields.
-6. Require `brief` to be `null` or the exact repository-relative `features/<feature-id>-<slug>/brief.md` path; reject a non-null brief for a non-SDD feature and require the referenced file to exist.
-7. Require exactly one directory matching `features/<feature-id>-*/` for every SDD feature; do not require a feature directory when `sdd` is false.
-8. Reject more than one `in_progress` feature.
-9. For an SDD feature in `spec_ready`, `in_progress`, or `done`, require `requirements.md`, `design.md`, and `tasks.md` inside its feature directory.
-10. Check required project tools and dependencies without installing them.
-11. Run the project's real test, lint, typecheck/static-analysis, and build commands when they are declared or clearly established.
-12. Avoid Artisan, database, production, deployment, and other destructive commands.
-
-Keep project checks explicit in the generated script. Do not create a generic package-manager guesser that may run unintended scripts.
+Create one executable root `init.sh`; never create `verify.sh`. For now it must only print `feature ok` and exit successfully. It must not inspect the project or execute Git, package managers, tests, lint, typecheck/static analysis, builds, framework CLIs, database operations, production or deployment commands, or external services.
 
 ## Validate
 
-Run `./init.sh` after creation. Fix harness-only failures. For missing project dependencies or failing product checks, report the failure without changing product code.
+Run `./init.sh` after creation and confirm that its only output is `feature ok`.
 
 Finish by listing created, preserved, and still-missing artifacts.
