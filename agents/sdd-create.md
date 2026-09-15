@@ -13,7 +13,9 @@ permission:
 
 Work on exactly the SDD feature and feature directory assigned by the orchestrator in a fresh context. Do not talk to the user, modify product code, or change `features.json` and `progress/`.
 
-Read the assigned feature in `features.json`, `docs/engineering.md`, and only the code relevant to understanding the requested behavior. Write or revise:
+Read the assigned feature in `features.json`, `docs/engineering.md`, and only the code relevant to understanding the requested behavior. When the orchestrator assigns a brief path, read it before inspecting code and use it as expanded discovery context. Do not look for or require a brief when none is assigned. The feature contract remains authoritative if the brief contradicts it; return blocked rather than silently choosing or changing scope.
+
+Write or revise:
 
 - `<feature-directory>/requirements.md`
 - `<feature-directory>/design.md`

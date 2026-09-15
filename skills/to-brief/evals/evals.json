@@ -1,0 +1,52 @@
+{
+  "skill_name": "to-brief",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create the requested brief for pending SDD feature F-014 using the confirmed discovery decisions in this conversation.",
+      "expected_output": "Creates a grounded expanded brief in the existing feature directory and links it from features.json without creating SDD artifacts.",
+      "files": [],
+      "assertions": [
+        "Creates features/F-014-*/brief.md with the documented brief sections.",
+        "Uses confirmed conversation context without inventing technical design or implementation tasks.",
+        "Updates only F-014's brief field to the repository-relative brief path after writing the file.",
+        "Validates the complete features.json before editing it and stops if global state is invalid.",
+        "Does not create requirements.md, design.md, tasks.md, or product code."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Create a brief for F-003 in direct mode from: Add audit export for administrators. Do not use our earlier discussion.",
+      "expected_output": "Uses only the registered feature and supplied direct text, keeping unavailable details explicit.",
+      "files": [],
+      "assertions": [
+        "Does not incorporate decisions found only in earlier conversation.",
+        "Does not invent scope, constraints, scenarios, or a technical design.",
+        "Creates and links the brief only when F-003 is pending and uses SDD."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Generate a brief for completed non-SDD feature F-002.",
+      "expected_output": "Stops because briefs can only be created for pending SDD features and leaves state unchanged.",
+      "files": [],
+      "assertions": [
+        "Does not change F-002's status or SDD decision.",
+        "Does not create a feature directory or brief.",
+        "Does not modify features.json."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Resume creating the brief for pending SDD feature F-006; brief is null but its brief.md was left behind by the previous failed attempt.",
+      "expected_output": "Validates and links the existing target brief without overwriting it or duplicating the feature directory.",
+      "files": [],
+      "assertions": [
+        "Treats the exact unlinked brief.md as an interrupted attempt only when its title and all required sections are valid.",
+        "Does not overwrite the existing brief unless revision was explicitly requested.",
+        "Updates only F-006's brief reference after validating the file.",
+        "Does not create another feature directory."
+      ]
+    }
+  ]
+}

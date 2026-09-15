@@ -4,10 +4,10 @@
     {
       "id": 1,
       "prompt": "/create-feature --direct --no-sdd \"Fix the typo in the checkout button\"",
-      "expected_output": "Creates features.json when absent and registers F-001 as pending with sdd false and observable acceptance criteria, without creating a feature directory.",
+      "expected_output": "Creates features.json when absent and registers F-001 as pending with sdd false, brief null, and observable acceptance criteria, without creating a feature directory.",
       "files": [],
       "assertions": [
-        "Creates valid features.json containing exactly one feature with id F-001 and status pending.",
+        "Creates valid features.json containing exactly one feature with id F-001, status pending, and brief null.",
         "Does not create features/ or a feature directory because SDD is disabled.",
         "Uses sdd false because --no-sdd overrides automatic classification.",
         "Does not create requirements.md, design.md, tasks.md, or product code."
@@ -21,7 +21,8 @@
       "assertions": [
         "Preserves existing features, appends the next ID after the highest numeric feature ID, and creates exactly one matching features/<feature-id>-<slug> directory because SDD is enabled.",
         "Acceptance criteria cover marketplace selection, matching results, pagination persistence, and unchanged behavior without a filter.",
-        "Uses sdd true and gives a short reason based on non-trivial cross-cutting behavior."
+        "Uses sdd true and gives a short reason based on non-trivial cross-cutting behavior.",
+        "Leaves brief null, does not create brief.md, and does not load to-brief because --brief was not requested."
       ]
     },
     {
@@ -34,6 +35,18 @@
         "Leaves features.json unchanged.",
         "Does not create a feature directory.",
         "Does not create specifications or product code."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/create-feature --brief \"Add role-based audit exports using the decisions from this conversation\"",
+      "expected_output": "Registers a pending SDD feature, then loads to-brief to create and link an expanded conversation-based brief.",
+      "files": [],
+      "assertions": [
+        "Treats --brief as explicit user intent and implies sdd true.",
+        "Registers the feature with brief null before delegating the brief workflow to to-brief.",
+        "Loads to-brief instead of embedding or recreating its document rules inside create-feature.",
+        "Returns the linked brief path and does not create requirements.md, design.md, tasks.md, or product code."
       ]
     }
   ]

@@ -19,9 +19,11 @@
       "files": [],
       "assertions": [
         "Creates features/F-001-add-dark-mode/.gitkeep because the registered feature uses SDD.",
+        "Normalizes a valid legacy F-001 entry without a brief field to brief null without changing its other values.",
         "Generated init.sh fails outside a Git work tree.",
         "Generated init.sh requires exactly one features/F-001-* directory for the SDD feature.",
-        "Generated init.sh validates SDD artifacts inside the matching feature directory."
+        "Generated init.sh validates SDD artifacts inside the matching feature directory.",
+        "Generated init.sh accepts brief null, rejects a path for another feature or a missing file, and rejects a non-null brief on a non-SDD feature."
       ]
     },
     {

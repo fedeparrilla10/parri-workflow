@@ -1,6 +1,6 @@
 ---
 name: create-feature
-description: Register a new feature in the current project's features.json, deriving a concise contract and deciding whether SDD is needed. Use whenever the user asks to create, add, queue, or register feature work, including /create-feature with --direct, --sdd, or --no-sdd.
+description: Register a new feature in the current project's features.json, deriving a concise contract and deciding whether SDD is needed. Use whenever the user asks to create, add, queue, or register feature work, including /create-feature with --direct, --sdd, --no-sdd, or --brief.
 ---
 
 # Create Feature
@@ -13,12 +13,15 @@ Register work for the orchestrator. Do not implement code, generate specificatio
 - `--direct`: use only the text supplied with the current instruction. Do not summarize earlier conversation.
 - `--sdd`: force `sdd: true`.
 - `--no-sdd`: force `sdd: false`.
+- `--brief`: explicitly request an expanded brief from the intake context and imply `sdd: true`.
 
-Reject `--sdd` combined with `--no-sdd`. If direct mode has no feature text, ask for it. Ask questions only when the available context cannot produce a concrete description and observable acceptance criteria.
+Reject `--sdd` combined with `--no-sdd`, and reject `--brief` combined with `--no-sdd`. If direct mode has no feature text, ask for it. Ask questions only when the available context cannot produce a concrete description and observable acceptance criteria.
 
 ## Ensure the index
 
 Work in the current project root. If `features.json` is absent, create it containing `[]`. If it exists, parse and validate it before editing; stop rather than repairing or overwriting invalid state.
+
+When valid existing entries predate the `brief` field, normalize them to `"brief": null` while appending the new feature. Do not otherwise change existing entries.
 
 The rest of the harness is not required to register work. If `progress/`, `docs/engineering.md`, or `init.sh` is missing, register the feature and then recommend `/setup-harness`.
 
@@ -34,6 +37,7 @@ Create exactly one entry:
   "acceptance_criteria": [
     "Observable outcome"
   ],
+  "brief": null,
   "sdd": false,
   "status": "pending"
 }
@@ -55,4 +59,6 @@ An explicit override always wins. Otherwise, prefer `sdd: true` when uncertainty
 
 ## Finish
 
-Write valid, consistently formatted JSON. Return the feature ID, title, SDD decision with one short reason, the feature directory when SDD is enabled, and whether setup is still needed.
+Write valid, consistently formatted JSON. When `--brief` is present, load the `to-brief` skill after registering the feature and follow it for the new feature ID. Preserve the selected input mode so `--direct` never gains access to earlier conversation through the handoff. Do not duplicate the brief workflow here.
+
+Return the feature ID, title, SDD decision with one short reason, the feature directory when SDD is enabled, the brief path when requested and successfully created, and whether setup is still needed.

@@ -39,7 +39,7 @@ Initialize `progress/history.md` as:
 # History
 ```
 
-Do not overwrite or reset existing state. If `features.json` exists but is invalid, stop and report the validation error.
+Do not overwrite or reset existing state. If `features.json` exists but is invalid, stop and report the validation error. Normalize valid legacy feature entries without a `brief` field by adding `"brief": null`; preserve every other field and value.
 
 For every SDD feature already registered, require one directory named `features/<feature-id>-<slug>/`. If none exists, create it with `.gitkeep` using the same slug rules as `create-feature`; if more than one directory has the same `<feature-id>-` prefix, stop and report the ambiguity. Do not create `features/` when no registered feature uses SDD. Preserve every existing feature artifact.
 
@@ -58,12 +58,13 @@ Create one executable root `init.sh`; never create `verify.sh`. It must use reli
 3. Parse `features.json` with an already available standard runtime.
 4. Accept only `pending`, `spec_ready`, `in_progress`, and `done`.
 5. Validate unique `F-NNN` IDs and required feature fields.
-6. Require exactly one directory matching `features/<feature-id>-*/` for every SDD feature; do not require a feature directory when `sdd` is false.
-7. Reject more than one `in_progress` feature.
-8. For an SDD feature in `spec_ready`, `in_progress`, or `done`, require `requirements.md`, `design.md`, and `tasks.md` inside its feature directory.
-9. Check required project tools and dependencies without installing them.
-10. Run the project's real test, lint, typecheck/static-analysis, and build commands when they are declared or clearly established.
-11. Avoid Artisan, database, production, deployment, and other destructive commands.
+6. Require `brief` to be `null` or the exact repository-relative `features/<feature-id>-<slug>/brief.md` path; reject a non-null brief for a non-SDD feature and require the referenced file to exist.
+7. Require exactly one directory matching `features/<feature-id>-*/` for every SDD feature; do not require a feature directory when `sdd` is false.
+8. Reject more than one `in_progress` feature.
+9. For an SDD feature in `spec_ready`, `in_progress`, or `done`, require `requirements.md`, `design.md`, and `tasks.md` inside its feature directory.
+10. Check required project tools and dependencies without installing them.
+11. Run the project's real test, lint, typecheck/static-analysis, and build commands when they are declared or clearly established.
+12. Avoid Artisan, database, production, deployment, and other destructive commands.
 
 Keep project checks explicit in the generated script. Do not create a generic package-manager guesser that may run unintended scripts.
 
