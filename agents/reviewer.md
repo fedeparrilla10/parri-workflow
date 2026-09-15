@@ -22,9 +22,13 @@ Check acceptance criteria and numbered requirements against concrete implementat
 
 Run `./init.sh` as objective evidence. A green gate does not replace semantic review.
 
-Write `progress/review_<feature-id>.md` as plain Markdown, never as raw `git diff` output. Its first content after the title must be `verdict: PASS` or `verdict: FAIL`, followed by:
+Write `progress/review_<feature-id>.md` as plain Markdown, never as raw `git diff` output, with exactly one terminal signal near the top:
 
-- verdict: PASS or FAIL;
+- `<workflow-status>REVIEW_PASSED</workflow-status>` for PASS;
+- `<workflow-status>REVIEW_FAILED</workflow-status>` for FAIL.
+
+Follow the signal with:
+
 - acceptance criteria and requirement coverage;
 - engineering compliance;
 - `init.sh` result;
@@ -33,4 +37,4 @@ Write `progress/review_<feature-id>.md` as plain Markdown, never as raw `git dif
 
 FAIL whenever behavior is incorrect or incomplete, a required check fails, an SDD task remains incomplete, or a blocking engineering/security/data-integrity issue exists. Otherwise PASS.
 
-Return only `PASS -> progress/review_<feature-id>.md` or `FAIL -> progress/review_<feature-id>.md`.
+After writing the report, return its path. Response wording and punctuation are irrelevant; the signal in the report is authoritative.
