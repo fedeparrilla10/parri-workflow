@@ -73,10 +73,6 @@ Keep the generic harness validation, database preflight, ordering, output semant
 
 If `init.sh` already exists, do not overwrite it. Prepare the proposed replacement, show the user its diff, and obtain explicit approval first. The same rule applies to any existing project-specific database safety implementation.
 
-## Agent protections
-
-Ensure the applicable project agent configuration gives only the orchestrator and reviewer permission to run the exact command `./init.sh`. Deny arguments and alternate test commands. Deny the implementer permission to execute or edit `init.sh`. Deny every workflow agent access to `.env` and `.env.*` while preserving `.env.example` access. Show configuration changes and obtain approval before editing project instructions or agent configuration.
-
 ## Validate installation
 
 Do not execute `./init.sh` during setup because doing so would run product tests. Instead:
