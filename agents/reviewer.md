@@ -1,5 +1,5 @@
 ---
-description: Independently reviews one implemented feature, runs the project gate, and writes a PASS or FAIL report without editing product code.
+description: Independently reviews one implemented feature, runs the project gate, and writes a PASS, FAIL, or BLOCKED report without editing product code.
 mode: subagent
 permission:
   read:
@@ -35,7 +35,8 @@ The orchestrator assigns review attempt 1 or 2. Write `progress/review_<feature-
 - `Attempt: 1/2` or `Attempt: 2/2`, matching the orchestrator assignment;
 
 - `<workflow-status>REVIEW_PASSED</workflow-status>` for PASS;
-- `<workflow-status>REVIEW_FAILED</workflow-status>` for FAIL.
+- `<workflow-status>REVIEW_FAILED</workflow-status>` for FAIL;
+- `<workflow-status>REVIEW_BLOCKED</workflow-status>` when an acceptance criterion requires a prohibited manual operation and has not been confirmed by the user.
 
 Follow the signal with:
 
@@ -43,8 +44,9 @@ Follow the signal with:
 - engineering compliance;
 - database safety preflight result and complete `init.sh` result;
 - blocking findings with file and line evidence;
+- for `REVIEW_BLOCKED`, the affected acceptance criteria, exact manual command or steps, their effect, and the expected result;
 - concise non-blocking recommendations when valuable.
 
-FAIL whenever behavior is incorrect or incomplete, the database safety preflight or another required gate check fails, an SDD task remains incomplete, or a blocking engineering/security/data-integrity issue exists. Otherwise PASS. Never approve when tests were skipped or executed outside `./init.sh`.
+PASS only when every acceptance criterion has concrete evidence. FAIL whenever behavior is incorrect or incomplete, the database safety preflight or another required gate check fails, an SDD task remains incomplete, or a blocking engineering/security/data-integrity issue exists. Use `REVIEW_BLOCKED` instead of PASS or FAIL when the missing evidence requires an operation agents are prohibited from performing, including Artisan, database, job, migration, integration, production, deployment, or external-service operations. Never approve when tests were skipped or executed outside `./init.sh`.
 
 After writing the report, return its path. Response wording and punctuation are irrelevant; the signal in the report is authoritative.
