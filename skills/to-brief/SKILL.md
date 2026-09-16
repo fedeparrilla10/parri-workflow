@@ -11,7 +11,7 @@ Turn confirmed intake context into a persistent feature brief. Do not register a
 
 Work in the current project root. Require one explicit feature ID from the user or the invoking skill. Parse and validate the complete `features.json` before editing it; stop rather than repairing or overwriting invalid state. Resolve exactly one matching entry. The feature must have `status: pending` and `sdd: true`; stop rather than changing its lifecycle or SDD decision.
 
-Require exactly one `features/<feature-id>-*/` directory. Stop if none or more than one exists; `create-feature` owns initial directory creation and `setup-harness` owns repair.
+Require the feature's `path` to be a non-null repository-relative directory created by `create-feature`. Use that exact path; never search for the directory with a wildcard. Stop if the path is invalid, missing, or not a directory; `create-feature` owns initial directory creation and `setup-harness` owns repair.
 
 ## Use the assigned context
 
@@ -50,6 +50,6 @@ Expand the intake faithfully without turning the brief into another copy of `fea
 
 If the feature already references a brief, revise it only when explicitly requested. Preserve established decisions unless the user has replaced them. If `brief` is null but the exact target file already exists after an interrupted attempt, an explicit invocation may link it without rewriting only when it has the registered feature title and every required section above. Otherwise stop and ask whether to revise the file; do not link incomplete or unrelated content.
 
-Once the target file has been written successfully or accepted as a valid interrupted attempt, set the feature's `brief` field to its repository-relative path, for example `features/F-014-filter-products/brief.md`. Preserve every other feature and field. If updating `features.json` fails, report the unlinked file and the recovery action rather than claiming success.
+Once the target file has been written successfully or accepted as a valid interrupted attempt, set the feature's `brief` field to `<path>/brief.md`, for example `features/F-014-filter-products/brief.md`. Preserve every other feature and field. If updating `features.json` fails, report the unlinked file and the recovery action rather than claiming success.
 
 Return only the feature ID and brief path, or a concise blocker.

@@ -10,11 +10,14 @@ const template = readFileSync(path.join(repoRoot, "skills/setup-harness/assets/i
 
 const shellQuote = (value) => `'${value.replaceAll("'", `'"'"'`)}'`
 
-const createFixture = (identity) => {
+const createFixture = (identity, features = [], featureDirectories = []) => {
   const directory = mkdtempSync(path.join(repoRoot, ".tmp-init-test-"))
   mkdirSync(path.join(directory, "progress"))
   mkdirSync(path.join(directory, "docs"))
-  writeFileSync(path.join(directory, "features.json"), "[]\n")
+  for (const featureDirectory of featureDirectories) {
+    mkdirSync(path.join(directory, featureDirectory), { recursive: true })
+  }
+  writeFileSync(path.join(directory, "features.json"), `${JSON.stringify(features, null, 2)}\n`)
   writeFileSync(path.join(directory, "progress/current.md"), "# Current\n")
   writeFileSync(path.join(directory, "progress/history.md"), "# History\n")
   writeFileSync(path.join(directory, "docs/engineering.md"), "# Engineering\n")
@@ -39,8 +42,8 @@ const createFixture = (identity) => {
   return directory
 }
 
-const runFixture = (identity, args = []) => {
-  const directory = createFixture(identity)
+const runFixture = (identity, args = [], features = [], featureDirectories = []) => {
+  const directory = createFixture(identity, features, featureDirectories)
   try {
     const result = spawnSync("bash", ["init.sh", ...args], {
       cwd: directory,
@@ -87,4 +90,73 @@ test("arguments are rejected before project checks", () => {
   assert.equal(result.status, 1)
   assert.equal(result.suiteRan, false)
   assert.match(result.output, /does not accept arguments/)
+})
+
+test("registered SDD path allows a pending feature", () => {
+  const featurePath = "features/F-001-filter-products"
+  const features = [{
+    id: "F-001",
+    title: "Filter products",
+    description: "Filter the catalog",
+    acceptance_criteria: ["Products can be filtered"],
+    path: featurePath,
+    brief: null,
+    sdd: true,
+    status: "pending",
+  }]
+  const result = runFixture(
+    { environment: "testing", host: "localhost", database: "app_test" },
+    [],
+    features,
+    [featurePath],
+  )
+
+  assert.equal(result.status, 0)
+  assert.equal(result.suiteRan, true)
+})
+
+test("missing registered SDD path fails before product tests", () => {
+  const features = [{
+    id: "F-001",
+    title: "Filter products",
+    description: "Filter the catalog",
+    acceptance_criteria: ["Products can be filtered"],
+    path: "features/F-001-filter-products",
+    brief: null,
+    sdd: true,
+    status: "pending",
+  }]
+  const result = runFixture(
+    { environment: "testing", host: "localhost", database: "app_test" },
+    [],
+    features,
+  )
+
+  assert.equal(result.status, 1)
+  assert.equal(result.suiteRan, false)
+  assert.match(result.output, /references a missing SDD directory/)
+})
+
+test("SDD path must match the feature ID", () => {
+  const featurePath = "features/F-002-filter-products"
+  const features = [{
+    id: "F-001",
+    title: "Filter products",
+    description: "Filter the catalog",
+    acceptance_criteria: ["Products can be filtered"],
+    path: featurePath,
+    brief: null,
+    sdd: true,
+    status: "pending",
+  }]
+  const result = runFixture(
+    { environment: "testing", host: "localhost", database: "app_test" },
+    [],
+    features,
+    [featurePath],
+  )
+
+  assert.equal(result.status, 1)
+  assert.equal(result.suiteRan, false)
+  assert.match(result.output, /has an invalid path/)
 })

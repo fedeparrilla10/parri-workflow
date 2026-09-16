@@ -43,7 +43,6 @@ if ! command -v python3 >/dev/null 2>&1; then
 fi
 
 if ! python3 <<'PY'
-import glob
 import json
 import os
 import re
@@ -69,6 +68,7 @@ required_fields = {
     "title",
     "description",
     "acceptance_criteria",
+    "path",
     "brief",
     "sdd",
     "status",
@@ -99,12 +99,14 @@ for feature in features:
     if not isinstance(feature["acceptance_criteria"], list):
         stop(f"Feature {feature_id} has invalid acceptance criteria")
 
-    feature_dirs = [path for path in glob.glob(f"features/{feature_id}-*") if os.path.isdir(path)]
+    feature_path = feature["path"]
     if feature["sdd"]:
-        if len(feature_dirs) != 1:
-            stop(f"Feature {feature_id} must have exactly one SDD directory")
-        feature_dir = feature_dirs[0]
-        expected_brief = f"{feature_dir}/brief.md"
+        path_pattern = rf"features/{re.escape(feature_id)}-[a-z0-9]+(?:-[a-z0-9]+)*"
+        if not isinstance(feature_path, str) or not re.fullmatch(path_pattern, feature_path):
+            stop(f"Feature {feature_id} has an invalid path")
+        if not os.path.isdir(feature_path):
+            stop(f"Feature {feature_id} references a missing SDD directory")
+        expected_brief = f"{feature_path}/brief.md"
         brief = feature["brief"]
         if brief is not None and brief != expected_brief:
             stop(f"Feature {feature_id} has an invalid brief path")
@@ -112,10 +114,13 @@ for feature in features:
             stop(f"Feature {feature_id} references a missing brief")
         if feature["status"] in artifact_statuses:
             for artifact in ("requirements.md", "design.md", "tasks.md"):
-                if not os.path.isfile(os.path.join(feature_dir, artifact)):
+                if not os.path.isfile(os.path.join(feature_path, artifact)):
                     stop(f"Feature {feature_id} is missing required SDD artifacts")
-    elif feature["brief"] is not None:
-        stop(f"Non-SDD feature {feature_id} cannot reference a brief")
+    else:
+        if feature_path is not None:
+            stop(f"Non-SDD feature {feature_id} cannot have a path")
+        if feature["brief"] is not None:
+            stop(f"Non-SDD feature {feature_id} cannot reference a brief")
 
 if in_progress > 1:
     stop("Only one feature may be in_progress")

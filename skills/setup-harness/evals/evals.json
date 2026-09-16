@@ -20,6 +20,7 @@
       "assertions": [
         "Uses the bundled init.sh template and leaves no __PARRI_*__ token in the generated file.",
         "Configures executable-plus-argument arrays without eval or sh -c.",
+        "Validates each SDD feature through its exact registered path without wildcard directory discovery.",
         "Keeps database safety before the test command and fails closed on malformed or unapproved identity.",
         "Does not read .env or execute init.sh, test commands, framework commands, or database commands during setup.",
         "Runs bash -n only and confirms that init.sh is executable."

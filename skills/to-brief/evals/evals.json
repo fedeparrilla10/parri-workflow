@@ -7,9 +7,9 @@
       "expected_output": "Creates a grounded expanded brief in the existing feature directory and links it from features.json without creating SDD artifacts.",
       "files": [],
       "assertions": [
-        "Creates features/F-014-*/brief.md with the documented brief sections.",
+        "Creates <path>/brief.md using F-014's exact registered path, without wildcard discovery, and includes the documented brief sections.",
         "Uses confirmed conversation context without inventing technical design or implementation tasks.",
-        "Updates only F-014's brief field to the repository-relative brief path after writing the file.",
+        "Updates only F-014's brief field to <path>/brief.md after writing the file.",
         "Validates the complete features.json before editing it and stops if global state is invalid.",
         "Does not create requirements.md, design.md, tasks.md, or product code."
       ]
@@ -45,7 +45,7 @@
         "Treats the exact unlinked brief.md as an interrupted attempt only when its title and all required sections are valid.",
         "Does not overwrite the existing brief unless revision was explicitly requested.",
         "Updates only F-006's brief reference after validating the file.",
-        "Does not create another feature directory."
+        "Uses F-006's registered path and does not create or search for another feature directory."
       ]
     }
   ]

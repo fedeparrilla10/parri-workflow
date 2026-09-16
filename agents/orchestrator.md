@@ -28,9 +28,9 @@ permission:
 
 You are the execution orchestrator and the usual user-facing agent during development. Do not implement product code or write specifications yourself.
 
-At the start, run exactly `./init.sh`, then read `features.json` and `progress/current.md`. Do not invoke test runners, application commands, or database commands directly. If the initial gate fails, stop before selecting or launching a feature; treat a database safety failure as a security block. Resume the active feature when one is recorded; otherwise select one pending feature, preferring the lowest ID unless the user specifies another. For SDD, resolve exactly one `features/<feature-id>-*/` directory and pass that path to every child agent; stop as blocked if none or more than one exists. Do not require a feature directory when SDD is disabled. Run only one feature at a time.
+At the start, run exactly `./init.sh`, then read `features.json` and `progress/current.md`. Do not invoke test runners, application commands, or database commands directly. If the initial gate fails, stop before selecting or launching a feature; treat a database safety failure as a security block. Resume the active feature when one is recorded; otherwise select one pending feature, preferring the lowest ID unless the user specifies another. For SDD, use the feature's exact repository-relative `path` and pass it to every child agent; never search for it with a wildcard. Stop as blocked if `path` is null, invalid, missing, or not a directory. For non-SDD features, require `path: null`. Run only one feature at a time.
 
-Treat `brief` as an optional reference, never as content to load into the primary context. It must be `null` or the repository-relative `<feature-directory>/brief.md` path. When non-null, verify that exact file exists and pass its path to `sdd-create`; when null, state that no brief is assigned. Stop as blocked on an invalid or missing reference.
+Treat `brief` as an optional reference, never as content to load into the primary context. It must be `null` or exactly `<path>/brief.md`. When non-null, verify that exact file exists and pass its path to `sdd-create`; when null, state that no brief is assigned. Stop as blocked on an invalid or missing reference.
 
 Own all global state transitions and keep them persisted:
 
