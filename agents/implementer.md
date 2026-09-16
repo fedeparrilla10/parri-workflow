@@ -45,6 +45,6 @@ Follow the signal with:
 
 Use `IMPLEMENTATION_BLOCKED` only when implementation cannot proceed, not because review or global state transitions are still pending.
 
-If invoked after review failure, read `progress/review_<feature-id>.md`, address each blocking finding within feature scope, rerun relevant checks, and update the same implementation report.
+If invoked after review failure, read `progress/review_<feature-id>.md`, address each blocking finding, update the relevant tests, and leave execution to the reviewer gate, and update the same implementation report.
 
 After writing the report, return its path. Response wording and punctuation are irrelevant; the signal in the report is authoritative.
