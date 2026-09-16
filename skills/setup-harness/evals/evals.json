@@ -14,26 +14,39 @@
     },
     {
       "id": 2,
-      "prompt": "Set up the harness in this initialized Git project with one pending SDD feature F-001 named Add dark mode.",
-      "expected_output": "Creates the harness skeleton, repairs the missing SDD feature directory, and generates an init.sh that validates Git and SDD artifacts.",
+      "prompt": "Set up the harness in a Git project whose public configuration declares a test command and a read-only database identity command. The user confirms environment testing, host localhost, and database app_test as allowed.",
+      "expected_output": "Creates a complete executable init.sh that validates harness state, proves database identity against exact allowlists, and only then runs the declared tests.",
       "files": [],
       "assertions": [
-        "Creates features/F-001-add-dark-mode/.gitkeep because the registered feature uses SDD.",
-        "Normalizes a valid legacy F-001 entry without a brief field to brief null without changing its other values.",
-        "Generated init.sh fails outside a Git work tree.",
-        "Generated init.sh requires exactly one features/F-001-* directory for the SDD feature.",
-        "Generated init.sh validates SDD artifacts inside the matching feature directory.",
-        "Generated init.sh accepts brief null, rejects a path for another feature or a missing file, and rejects a non-null brief on a non-SDD feature."
+        "Uses the bundled init.sh template and leaves no __PARRI_*__ token in the generated file.",
+        "Configures executable-plus-argument arrays without eval or sh -c.",
+        "Keeps database safety before the test command and fails closed on malformed or unapproved identity.",
+        "Does not read .env or execute init.sh, test commands, framework commands, or database commands during setup.",
+        "Runs bash -n only and confirms that init.sh is executable."
       ]
     },
     {
       "id": 3,
-      "prompt": "Set up the harness in this initialized Git project with no SDD features.",
-      "expected_output": "Creates the global harness state without creating features/.",
+      "prompt": "Set up the harness for a project whose test command is known but whose effective database identity cannot be derived safely from public configuration.",
+      "expected_output": "Asks for the missing project-specific identity decision before generating init.sh and never claims successful setup with an unconfigured gate.",
       "files": [],
       "assertions": [
-        "Does not create features/ when no registered feature uses SDD.",
-        "Generated init.sh does not require a feature directory for non-SDD features."
+        "Never opens or requests .env or credentials.",
+        "Does not leave placeholders or a permissive database check.",
+        "Explains that infrastructure may be prepared later while the gate configuration itself must be complete.",
+        "Does not create databases, users, schemas, containers, or environment files."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Repair this existing harness. It already has an init.sh with project-specific checks that differ from the bundled protected template.",
+      "expected_output": "Prepares and shows the proposed diff, then waits for explicit approval before replacing the existing protected gate.",
+      "files": [],
+      "assertions": [
+        "Does not overwrite init.sh before approval.",
+        "Preserves existing feature and progress state.",
+        "Keeps the no-arguments contract and database-before-tests ordering.",
+        "Reports configured public allowlists without revealing observed connection values."
       ]
     }
   ]

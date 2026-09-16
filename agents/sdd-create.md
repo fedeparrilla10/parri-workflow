@@ -2,6 +2,14 @@
 description: Creates or revises requirements, design, and tasks for one registered SDD feature without implementing product code.
 mode: subagent
 permission:
+  read:
+    "*": allow
+    ".env": deny
+    ".env.*": deny
+    "**/.env": deny
+    "**/.env.*": deny
+    ".env.example": allow
+    "**/.env.example": allow
   edit:
     "*": deny
     "features/*/requirements.md": allow
