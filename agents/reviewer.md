@@ -22,7 +22,9 @@ Check acceptance criteria and numbered requirements against concrete implementat
 
 Run `./init.sh` as objective evidence. A green gate does not replace semantic review.
 
-Write `progress/review_<feature-id>.md` as plain Markdown, never as raw `git diff` output, with exactly one terminal signal near the top:
+The orchestrator assigns review attempt 1 or 2. Write `progress/review_<feature-id>.md` as plain Markdown, never as raw `git diff` output, with the assigned attempt marker and exactly one terminal signal near the top:
+
+- `Attempt: 1/2` or `Attempt: 2/2`, matching the orchestrator assignment;
 
 - `<workflow-status>REVIEW_PASSED</workflow-status>` for PASS;
 - `<workflow-status>REVIEW_FAILED</workflow-status>` for FAIL.
