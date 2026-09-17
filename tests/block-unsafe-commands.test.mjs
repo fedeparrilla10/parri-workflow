@@ -25,7 +25,7 @@ test("only the exact gate and its syntax check are accepted", async () => {
   await assert.doesNotReject(runBash("git diff -- init.sh"))
 })
 
-test("direct test runners and database clients are blocked", async () => {
+test("direct test runners are allowed", async () => {
   for (const command of [
     "vendor/bin/phpunit",
     "python3 -m unittest discover",
@@ -33,6 +33,14 @@ test("direct test runners and database clients are blocked", async () => {
     "composer run test",
     "node --test tests",
     "go test ./...",
+    "cargo test",
+  ]) {
+    await assert.doesNotReject(runBash(command), command)
+  }
+})
+
+test("Artisan and database clients remain blocked", async () => {
+  for (const command of [
     "mysql app",
     "psql customers",
     "php artisan test",
@@ -59,8 +67,8 @@ test("plugin hook rejects protected reads and unsafe commands", async () => {
   await assert.rejects(
     beforeToolExecution(
       { tool: "bash" },
-      { args: { command: "pytest" } },
+      { args: { command: "psql customers" } },
     ),
-    /Direct test runners/,
+    /Direct database clients/,
   )
 })

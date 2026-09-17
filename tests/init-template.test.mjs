@@ -106,6 +106,21 @@ test("forced colors style successful gate labels", () => {
   assert.match(result.output, /\x1b\[30;42m\[OK\]\x1b\[0m Database safety/)
 })
 
+test("forced colors style failed and skipped gate labels", () => {
+  const identity = { environment: "production", host: "db.internal", database: "customers" }
+  const result = runFixture(
+    identity,
+    [],
+    [],
+    [],
+    { CLICOLOR_FORCE: "1", NO_COLOR: undefined },
+  )
+
+  assert.equal(result.status, 1)
+  assert.match(result.output, /\x1b\[97;41m\[FAIL\]\x1b\[0m Database safety/)
+  assert.match(result.output, /\x1b\[30;43m\[WARN\]\x1b\[0m Product tests/)
+})
+
 test("NO_COLOR disables colors even when they are forced", () => {
   const result = runFixture(
     { environment: "testing", host: "localhost", database: "app_test" },

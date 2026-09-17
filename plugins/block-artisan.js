@@ -32,20 +32,6 @@ const blockedCommand = (command) => {
     return "Artisan commands are not allowed";
   }
 
-  const directTestRunner = [
-    /(^|[;&|]\s*|\s)(?:\S*\/)?(?:phpunit|pest|pytest)(?:\s|$)/i,
-    /(^|[;&|]\s*|\s)python3?\s+-m\s+unittest(?:\s|$)/i,
-    /(^|[;&|]\s*|\s)composer\s+(?:run\s+)?test(?:\s|$)/i,
-    /(^|[;&|]\s*|\s)(?:npm|pnpm|yarn|bun)\s+(?:run\s+)?test(?:\s|$)/i,
-    /(^|[;&|]\s*|\s)node\s+--test(?:\s|$)/i,
-    /(^|[;&|]\s*|\s)go\s+test(?:\s|$)/i,
-    /(^|[;&|]\s*|\s)cargo\s+test(?:\s|$)/i,
-  ];
-
-  if (directTestRunner.some((pattern) => pattern.test(command))) {
-    return "Direct test runners are not allowed; use ./init.sh";
-  }
-
   if (
     /(^|[;&|]\s*|\s)(?:\S*\/)?(?:mysql|mariadb|psql|sqlite3|mongosh|redis-cli)(?:\s|$)/i.test(
       command,
