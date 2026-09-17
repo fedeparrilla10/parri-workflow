@@ -15,12 +15,13 @@
     {
       "id": 2,
       "prompt": "Set up the harness in a Git project whose public configuration declares a test command and a read-only database identity command. The user confirms environment testing, host localhost, and database app_test as allowed.",
-      "expected_output": "Creates a complete executable init.sh that validates harness state, proves database identity against exact allowlists, and only then runs the declared tests.",
+      "expected_output": "Creates harness state under .ai/ and a complete executable root init.sh that validates that state, proves database identity against exact allowlists, and only then runs the declared tests.",
       "files": [],
       "assertions": [
         "Uses the bundled init.sh template and leaves no __PARRI_*__ token in the generated file.",
         "Configures executable-plus-argument arrays without eval or sh -c.",
-        "Validates each SDD feature through its exact registered path without wildcard directory discovery.",
+        "Creates .ai/features.json and .ai/progress/, keeps docs/engineering.md as project documentation, and keeps init.sh and AGENTS.md at their required root discovery locations.",
+        "Validates each SDD feature through its exact registered .ai/features/<feature-id>-<slug> path without wildcard directory discovery.",
         "Keeps database safety before the test command and fails closed on malformed or unapproved identity.",
         "Does not read .env or execute init.sh, test commands, framework commands, or database commands during setup.",
         "Runs bash -n only and confirms that init.sh is executable."
@@ -45,7 +46,7 @@
       "files": [],
       "assertions": [
         "Does not overwrite init.sh before approval.",
-        "Preserves existing feature and progress state.",
+        "Preserves existing .ai feature and progress state.",
         "Keeps the no-arguments contract and database-before-tests ordering.",
         "Reports configured public allowlists without revealing observed connection values."
       ]

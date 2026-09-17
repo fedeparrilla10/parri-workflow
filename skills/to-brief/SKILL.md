@@ -1,6 +1,6 @@
 ---
 name: to-brief
-description: Create or revise an expanded brief for one registered feature and link it from features.json. Use when create-feature delegates --brief or when the user explicitly asks to create, generate, or revise a feature brief.
+description: Create or revise an expanded brief for one registered feature and link it from .ai/features.json. Use when create-feature delegates --brief or when the user explicitly asks to create, generate, or revise a feature brief.
 ---
 
 # To Brief
@@ -9,9 +9,9 @@ Turn confirmed intake context into a persistent feature brief. Do not register a
 
 ## Resolve the feature
 
-Work in the current project root. Require one explicit feature ID from the user or the invoking skill. Parse and validate the complete `features.json` before editing it; stop rather than repairing or overwriting invalid state. Resolve exactly one matching entry. The feature must have `status: pending` and `sdd: true`; stop rather than changing its lifecycle or SDD decision.
+Work in the current project root. Require one explicit feature ID from the user or the invoking skill. Parse and validate the complete `.ai/features.json` before editing it; stop rather than repairing or overwriting invalid state. Resolve exactly one matching entry. The feature must have `status: pending` and `sdd: true`; stop rather than changing its lifecycle or SDD decision.
 
-Require the feature's `path` to be a non-null repository-relative directory created by `create-feature`. Use that exact path; never search for the directory with a wildcard. Stop if the path is invalid, missing, or not a directory; `create-feature` owns initial directory creation and `setup-harness` owns repair.
+Require the feature's `path` to be a non-null repository-relative directory under `.ai/features/` created by `create-feature`. Use that exact path; never search for the directory with a wildcard. Stop if the path is invalid, missing, outside `.ai/features/`, or not a directory; `create-feature` owns initial directory creation and `setup-harness` owns repair.
 
 ## Use the assigned context
 
@@ -46,10 +46,10 @@ Create `<feature-directory>/brief.md` with this structure:
 ## Open Questions
 ```
 
-Expand the intake faithfully without turning the brief into another copy of `features.json`. Record the agreed product direction and plan, not a newly invented technical design. Keep unknown information explicit instead of filling gaps. The future SDD owns detailed requirements, technical design, and implementation tasks.
+Expand the intake faithfully without turning the brief into another copy of `.ai/features.json`. Record the agreed product direction and plan, not a newly invented technical design. Keep unknown information explicit instead of filling gaps. The future SDD owns detailed requirements, technical design, and implementation tasks.
 
 If the feature already references a brief, revise it only when explicitly requested. Preserve established decisions unless the user has replaced them. If `brief` is null but the exact target file already exists after an interrupted attempt, an explicit invocation may link it without rewriting only when it has the registered feature title and every required section above. Otherwise stop and ask whether to revise the file; do not link incomplete or unrelated content.
 
-Once the target file has been written successfully or accepted as a valid interrupted attempt, set the feature's `brief` field to `<path>/brief.md`, for example `features/F-014-filter-products/brief.md`. Preserve every other feature and field. If updating `features.json` fails, report the unlinked file and the recovery action rather than claiming success.
+Once the target file has been written successfully or accepted as a valid interrupted attempt, set the feature's `brief` field to `<path>/brief.md`, for example `.ai/features/F-014-filter-products/brief.md`. Preserve every other feature and field. If updating `.ai/features.json` fails, report the unlinked file and the recovery action rather than claiming success.
 
 Return only the feature ID and brief path, or a concise blocker.

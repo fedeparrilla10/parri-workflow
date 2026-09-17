@@ -12,14 +12,14 @@ const shellQuote = (value) => `'${value.replaceAll("'", `'"'"'`)}'`
 
 const createFixture = (identity, features = [], featureDirectories = []) => {
   const directory = mkdtempSync(path.join(repoRoot, ".tmp-init-test-"))
-  mkdirSync(path.join(directory, "progress"))
+  mkdirSync(path.join(directory, ".ai/progress"), { recursive: true })
   mkdirSync(path.join(directory, "docs"))
   for (const featureDirectory of featureDirectories) {
     mkdirSync(path.join(directory, featureDirectory), { recursive: true })
   }
-  writeFileSync(path.join(directory, "features.json"), `${JSON.stringify(features, null, 2)}\n`)
-  writeFileSync(path.join(directory, "progress/current.md"), "# Current\n")
-  writeFileSync(path.join(directory, "progress/history.md"), "# History\n")
+  writeFileSync(path.join(directory, ".ai/features.json"), `${JSON.stringify(features, null, 2)}\n`)
+  writeFileSync(path.join(directory, ".ai/progress/current.md"), "# Current\n")
+  writeFileSync(path.join(directory, ".ai/progress/history.md"), "# History\n")
   writeFileSync(path.join(directory, "docs/engineering.md"), "# Engineering\n")
   writeFileSync(
     path.join(directory, "identity.mjs"),
@@ -93,7 +93,7 @@ test("arguments are rejected before project checks", () => {
 })
 
 test("registered SDD path allows a pending feature", () => {
-  const featurePath = "features/F-001-filter-products"
+  const featurePath = ".ai/features/F-001-filter-products"
   const features = [{
     id: "F-001",
     title: "Filter products",
@@ -121,7 +121,7 @@ test("missing registered SDD path fails before product tests", () => {
     title: "Filter products",
     description: "Filter the catalog",
     acceptance_criteria: ["Products can be filtered"],
-    path: "features/F-001-filter-products",
+    path: ".ai/features/F-001-filter-products",
     brief: null,
     sdd: true,
     status: "pending",
@@ -138,7 +138,31 @@ test("missing registered SDD path fails before product tests", () => {
 })
 
 test("SDD path must match the feature ID", () => {
-  const featurePath = "features/F-002-filter-products"
+  const featurePath = ".ai/features/F-002-filter-products"
+  const features = [{
+    id: "F-001",
+    title: "Filter products",
+    description: "Filter the catalog",
+    acceptance_criteria: ["Products can be filtered"],
+    path: featurePath,
+    brief: null,
+    sdd: true,
+    status: "pending",
+  }]
+  const result = runFixture(
+    { environment: "testing", host: "localhost", database: "app_test" },
+    [],
+    features,
+    [featurePath],
+  )
+
+  assert.equal(result.status, 1)
+  assert.equal(result.suiteRan, false)
+  assert.match(result.output, /has an invalid path/)
+})
+
+test("legacy root-level SDD paths are rejected", () => {
+  const featurePath = "features/F-001-filter-products"
   const features = [{
     id: "F-001",
     title: "Filter products",

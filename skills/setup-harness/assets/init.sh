@@ -30,7 +30,7 @@ if [[ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" != "true" ]]; then
   exit 1
 fi
 
-for required_file in features.json progress/current.md progress/history.md docs/engineering.md; do
+for required_file in .ai/features.json .ai/progress/current.md .ai/progress/history.md docs/engineering.md; do
   if [[ ! -f "$required_file" ]]; then
     fail "Missing required harness file: $required_file"
     exit 1
@@ -55,13 +55,13 @@ def stop(message):
 
 
 try:
-    with open("features.json", encoding="utf-8") as feature_file:
+    with open(".ai/features.json", encoding="utf-8") as feature_file:
         features = json.load(feature_file)
 except Exception:
-    stop("features.json is not valid JSON")
+    stop(".ai/features.json is not valid JSON")
 
 if not isinstance(features, list):
-    stop("features.json must contain a JSON array")
+    stop(".ai/features.json must contain a JSON array")
 
 required_fields = {
     "id",
@@ -101,7 +101,7 @@ for feature in features:
 
     feature_path = feature["path"]
     if feature["sdd"]:
-        path_pattern = rf"features/{re.escape(feature_id)}-[a-z0-9]+(?:-[a-z0-9]+)*"
+        path_pattern = rf"\.ai/features/{re.escape(feature_id)}-[a-z0-9]+(?:-[a-z0-9]+)*"
         if not isinstance(feature_path, str) or not re.fullmatch(path_pattern, feature_path):
             stop(f"Feature {feature_id} has an invalid path")
         if not os.path.isdir(feature_path):

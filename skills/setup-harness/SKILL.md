@@ -18,14 +18,14 @@ Require Git before making changes. Verify that `git` is available and that the p
 Create missing harness artifacts:
 
 ```text
-features.json
-progress/current.md
-progress/history.md
+.ai/features.json
+.ai/progress/current.md
+.ai/progress/history.md
 docs/engineering.md
 init.sh
 ```
 
-Use `[]` for a new `features.json`. Initialize `progress/current.md` as:
+Use `[]` for a new `.ai/features.json`. Initialize `.ai/progress/current.md` as:
 
 ```markdown
 # Current
@@ -33,19 +33,19 @@ Use `[]` for a new `features.json`. Initialize `progress/current.md` as:
 No active feature.
 ```
 
-Initialize `progress/history.md` as:
+Initialize `.ai/progress/history.md` as:
 
 ```markdown
 # History
 ```
 
-Do not overwrite or reset existing state. If `features.json` exists but is invalid JSON, stop and report the validation error. Preserve every existing feature entry and artifact unchanged. Setup does not create, normalize, or validate features; feature registration belongs to its dedicated workflow. Do not load feature-registration skills during setup.
+Do not overwrite or reset existing state. If `.ai/features.json` exists but is invalid JSON, stop and report the validation error. Preserve every existing feature entry and artifact unchanged. Setup does not create, normalize, or validate features; feature registration belongs to its dedicated workflow. Do not load feature-registration skills during setup. Do not detect, migrate, or reuse harness artifacts from legacy root-level `features/` or `progress/` paths.
 
 ## Engineering guide
 
 If `docs/engineering.md` is absent, load `code-architecture` and complete its workflow before continuing. Do not infer desired architecture solely from legacy code. If the user declines to define it, leave setup incomplete and report the missing guide.
 
-Ensure the applicable project `AGENTS.md` tells designing, implementing, and reviewing agents to read `docs/engineering.md`. Show the exact proposed `AGENTS.md` change and obtain approval before editing or creating that file.
+Ensure the applicable project `AGENTS.md` tells designing, implementing, and reviewing agents to read `docs/engineering.md`. Show the exact proposed `AGENTS.md` change and obtain approval before editing or creating that file. Keep `AGENTS.md` at its applicable discovery location rather than moving it under `.ai/`.
 
 ## Establish the project checks
 

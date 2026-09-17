@@ -4,13 +4,13 @@
     {
       "id": 1,
       "prompt": "Create the requested brief for pending SDD feature F-014 using the confirmed discovery decisions in this conversation.",
-      "expected_output": "Creates a grounded expanded brief in the existing feature directory and links it from features.json without creating SDD artifacts.",
+      "expected_output": "Creates a grounded expanded brief in the existing .ai/features directory and links it from .ai/features.json without creating SDD artifacts.",
       "files": [],
       "assertions": [
-        "Creates <path>/brief.md using F-014's exact registered path, without wildcard discovery, and includes the documented brief sections.",
+        "Creates <path>/brief.md using F-014's exact registered .ai/features path, without wildcard discovery, and includes the documented brief sections.",
         "Uses confirmed conversation context without inventing technical design or implementation tasks.",
         "Updates only F-014's brief field to <path>/brief.md after writing the file.",
-        "Validates the complete features.json before editing it and stops if global state is invalid.",
+        "Validates the complete .ai/features.json before editing it and stops if global state is invalid.",
         "Does not create requirements.md, design.md, tasks.md, or product code."
       ]
     },
@@ -33,7 +33,7 @@
       "assertions": [
         "Does not change F-002's status or SDD decision.",
         "Does not create a feature directory or brief.",
-        "Does not modify features.json."
+        "Does not modify .ai/features.json."
       ]
     },
     {

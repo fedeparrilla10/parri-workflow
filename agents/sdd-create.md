@@ -12,16 +12,16 @@ permission:
     "**/.env.example": allow
   edit:
     "*": deny
-    "features/*/requirements.md": allow
-    "features/*/design.md": allow
-    "features/*/tasks.md": allow
+    ".ai/features/*/requirements.md": allow
+    ".ai/features/*/design.md": allow
+    ".ai/features/*/tasks.md": allow
   bash: deny
   task: deny
 ---
 
-Work on exactly the SDD feature and feature directory assigned by the orchestrator in a fresh context. Do not talk to the user, modify product code, or change `features.json` and `progress/`.
+Work on exactly the SDD feature and feature directory assigned by the orchestrator in a fresh context. Do not talk to the user, modify product code, or change `.ai/features.json` and `.ai/progress/`.
 
-Read the assigned feature in `features.json`, `docs/engineering.md`, and only the code relevant to understanding the requested behavior. When the orchestrator assigns a brief path, read it before inspecting code and use it as expanded discovery context. Do not look for or require a brief when none is assigned. The feature contract remains authoritative if the brief contradicts it; return blocked rather than silently choosing or changing scope.
+Read the assigned feature in `.ai/features.json`, `docs/engineering.md`, and only the code relevant to understanding the requested behavior. When the orchestrator assigns a brief path, read it before inspecting code and use it as expanded discovery context. Do not look for or require a brief when none is assigned. The feature contract remains authoritative if the brief contradicts it; return blocked rather than silently choosing or changing scope.
 
 Write or revise:
 

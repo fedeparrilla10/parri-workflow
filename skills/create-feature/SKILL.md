@@ -1,6 +1,6 @@
 ---
 name: create-feature
-description: Register a new feature in the current project's features.json, deriving a concise contract and deciding whether SDD is needed. Use whenever the user asks to create, add, queue, or register feature work, including /create-feature with --direct, --sdd, --no-sdd, or --brief.
+description: Register a new feature in the current project's .ai/features.json, deriving a concise contract and deciding whether SDD is needed. Use whenever the user asks to create, add, queue, or register feature work, including /create-feature with --direct, --sdd, --no-sdd, or --brief.
 ---
 
 # Create Feature
@@ -19,11 +19,11 @@ Reject `--sdd` combined with `--no-sdd`, and reject `--brief` combined with `--n
 
 ## Ensure the index
 
-Work in the current project root. If `features.json` is absent, create it containing `[]`. If it exists, parse and validate it before editing; stop rather than repairing or overwriting invalid state.
+Work in the current project root. If `.ai/features.json` is absent, create `.ai/` and the file containing `[]`. If it exists, parse and validate it before editing; stop rather than repairing or overwriting invalid state. Do not detect, migrate, or reuse a legacy root-level `features.json`.
 
-When valid existing entries predate the `path` or `brief` fields, normalize the missing fields to `null` while appending the new feature. Do not otherwise change existing entries. A pre-existing SDD feature with a missing or null `path` requires explicit repair before execution; never rediscover its directory with a wildcard.
+When valid existing entries predate the `path` or `brief` fields, normalize the missing fields to `null` while appending the new feature. Do not otherwise change existing entries. A pre-existing SDD feature with a missing or null `path`, or with a path outside `.ai/features/`, requires explicit repair before execution; never migrate it or rediscover its directory with a wildcard.
 
-The rest of the harness is not required to register work. If `progress/`, `docs/engineering.md`, or `init.sh` is missing, register the feature and then recommend `/setup-harness`.
+The rest of the harness is not required to register work. If `.ai/progress/`, `docs/engineering.md`, or `init.sh` is missing, register the feature and then recommend `/setup-harness`.
 
 ## Build the feature contract
 
@@ -46,7 +46,7 @@ Create exactly one entry:
 
 Choose the next ID by taking the highest numeric `F-NNN` ID and adding one, starting at `F-001`. Never reuse a missing or deleted number. Preserve all existing entries and their order, then append the new entry. Use the user's language.
 
-Only when `sdd` is true, create the feature directory as `features/<feature-id>-<slug>/.gitkeep`, for example `features/F-001-filter-products/.gitkeep`, and store its repository-relative directory in `path`, for example `"path": "features/F-001-filter-products"`. Derive a concise lowercase kebab-case slug from the title, remove diacritics, and use only `a-z`, `0-9`, and hyphens; use `feature` if no usable characters remain. The feature ID is the stable identity. Never create a second directory with the same `<feature-id>-` prefix. When `sdd` is false, keep `path: null` and do not create `features/` or a feature directory.
+Only when `sdd` is true, create the feature directory as `.ai/features/<feature-id>-<slug>/.gitkeep`, for example `.ai/features/F-001-filter-products/.gitkeep`, and store its repository-relative directory in `path`, for example `"path": ".ai/features/F-001-filter-products"`. Derive a concise lowercase kebab-case slug from the title, remove diacritics, and use only `a-z`, `0-9`, and hyphens; use `feature` if no usable characters remain. The feature ID is the stable identity. Never create a second directory with the same `<feature-id>-` prefix. When `sdd` is false, keep `path: null` and do not create `.ai/features/` or a feature directory.
 
 Write acceptance criteria as specific observable outcomes. Include unchanged behavior or relevant error behavior when it materially protects against regression. Do not add implementation steps, file paths, architecture choices, test plans, or speculative scope.
 
