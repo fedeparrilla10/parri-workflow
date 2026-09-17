@@ -20,6 +20,7 @@ permission:
     "git status*": allow
     "git diff*": allow
     "git log*": allow
+  monday_*: deny
 ---
 
 Review exactly the feature assigned by the orchestrator in a fresh context. For SDD, also use the feature directory assigned by the orchestrator. Do not talk to the user, modify product code, update tasks, change feature state, or launch subagents. Your only writable artifact is `.ai/progress/review_<feature-id>.md`.

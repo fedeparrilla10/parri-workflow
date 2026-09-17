@@ -1,0 +1,29 @@
+{
+  "skill_name": "monday",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Close F-012 after the final gate with a valid .ai/monday.json.",
+      "expected_output": "Requests decimal hours and approval, delegates one creation, and verifies the success report.",
+      "files": [],
+      "assertions": [
+        "Reads the persisted board mapping from .ai/monday.json.",
+        "Shows exact item arguments before requesting approval.",
+        "Delegates MCP access to monday-worker.",
+        "Never changes local feature completion."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Monday failed while closing a feature whose tests passed.",
+      "expected_output": "Shows a warning, persists no failure, and returns without blocking local completion.",
+      "files": [],
+      "assertions": [
+        "Does not append a failed report entry.",
+        "Does not retry automatically.",
+        "Does not modify feature or progress state.",
+        "Returns control to the orchestrator."
+      ]
+    }
+  ]
+}

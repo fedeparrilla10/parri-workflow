@@ -17,6 +17,7 @@ permission:
     ".ai/features/*/tasks.md": allow
   bash: deny
   task: deny
+  monday_*: deny
 ---
 
 Work on exactly the SDD feature and feature directory assigned by the orchestrator in a fresh context. Do not talk to the user, modify product code, or change `.ai/features.json` and `.ai/progress/`.

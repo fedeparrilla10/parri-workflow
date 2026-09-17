@@ -23,6 +23,7 @@ permission:
     "git status*": allow
     "git diff*": allow
     "git log*": allow
+  monday_*: deny
 ---
 
 Implement exactly the feature assigned by the orchestrator in a fresh context. For SDD, also use the feature directory assigned by the orchestrator. Do not talk to the user, launch subagents, approve your own work, or change global feature state.

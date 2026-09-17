@@ -23,7 +23,7 @@ Work in the current project root. If `.ai/features.json` is absent, create `.ai/
 
 When valid existing entries predate the `path` or `brief` fields, normalize the missing fields to `null` while appending the new feature. Do not otherwise change existing entries. A pre-existing SDD feature with a missing or null `path`, or with a path outside `.ai/features/`, requires explicit repair before execution; never migrate it or rediscover its directory with a wildcard.
 
-The rest of the harness is not required to register work. If `.ai/progress/`, `docs/engineering.md`, or `init.sh` is missing, register the feature and then recommend `/setup-harness`.
+The rest of the harness is not required to register work. If `.ai/progress/`, `docs/engineering.md`, or `init.sh` is missing, register the feature and then recommend setting up the harness.
 
 ## Build the feature contract
 

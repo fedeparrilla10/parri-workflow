@@ -1,0 +1,42 @@
+{
+  "skill_name": "setup-monday",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Set up this project's Parri workflow with Monday.",
+      "expected_output": "Proposes project-local hosted MCP configuration, waits for approval, and requires restart and OAuth before board mapping.",
+      "files": [],
+      "assertions": [
+        "Never edits the global OpenCode configuration or stores a Monday token.",
+        "Shows the exact project configuration diff and waits for approval.",
+        "Stops for an OpenCode restart after adding the MCP configuration.",
+        "Explains the exact opencode mcp auth monday command before authentication."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Configure Monday board 123 after OAuth. Use Done from Status and Hours from Time Tracking.",
+      "expected_output": "Rejects Time Tracking for writable hours and requires a Numbers column proven from the board schema.",
+      "files": [],
+      "assertions": [
+        "Requests approval before the read-only board-schema MCP call.",
+        "Does not configure a Time Tracking column for hours.",
+        "Requires a Numbers column and a verified numeric status index.",
+        "Creates no report until a valid mapping is confirmed."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Move this project's Monday integration to another board without losing its history.",
+      "expected_output": "Updates the dedicated project mapping after validation and approval without changing the success report.",
+      "files": [],
+      "assertions": [
+        "Persists the board URL and verified board ID in .ai/monday.json.",
+        "Preserves all existing entries in .ai/monday-report.json.",
+        "Shows the exact mapping diff and waits for approval.",
+        "Does not create another Monday state or report file.",
+        "Stops rather than repairing an invalid existing report."
+      ]
+    }
+  ]
+}

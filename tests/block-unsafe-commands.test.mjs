@@ -2,22 +2,30 @@ import assert from "node:assert/strict"
 import { readFile } from "node:fs/promises"
 import path from "node:path"
 import test from "node:test"
-import { fileURLToPath, pathToFileURL } from "node:url"
+import { fileURLToPath } from "node:url"
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const pluginPath = path.join(repoRoot, "plugins/block-artisan.js")
 const source = await readFile(pluginPath, "utf8")
 const plugin = await import(`data:text/javascript;base64,${Buffer.from(source).toString("base64")}`)
+const hooks = await plugin.BlockUnsafeCommands()
+const beforeToolExecution = hooks["tool.execute.before"]
 
-test("only the exact gate and its syntax check are accepted", () => {
-  assert.equal(plugin.blockedCommand("./init.sh"), null)
-  assert.equal(plugin.blockedCommand("bash -n init.sh"), null)
-  assert.match(plugin.blockedCommand("./init.sh --no-testing"), /exactly/)
-  assert.match(plugin.blockedCommand("bash ./init.sh"), /exactly/)
-  assert.equal(plugin.blockedCommand("git diff -- init.sh"), null)
+const runBash = (command) =>
+  beforeToolExecution({ tool: "bash" }, { args: { command } })
+
+const readFileWithPlugin = (filePath) =>
+  beforeToolExecution({ tool: "read" }, { args: { filePath } })
+
+test("only the exact gate and its syntax check are accepted", async () => {
+  await assert.doesNotReject(runBash("./init.sh"))
+  await assert.doesNotReject(runBash("bash -n init.sh"))
+  await assert.rejects(runBash("./init.sh --no-testing"), /exactly/)
+  await assert.rejects(runBash("bash ./init.sh"), /exactly/)
+  await assert.doesNotReject(runBash("git diff -- init.sh"))
 })
 
-test("direct test runners and database clients are blocked", () => {
+test("direct test runners and database clients are blocked", async () => {
   for (const command of [
     "vendor/bin/phpunit",
     "python3 -m unittest discover",
@@ -29,28 +37,27 @@ test("direct test runners and database clients are blocked", () => {
     "psql customers",
     "php artisan test",
   ]) {
-    assert.notEqual(plugin.blockedCommand(command), null, command)
+    await assert.rejects(runBash(command), /BLOCKED/, command)
   }
 })
 
-test("environment files are protected while examples remain readable", () => {
-  assert.equal(plugin.isProtectedEnvFile(".env"), true)
-  assert.equal(plugin.isProtectedEnvFile("/project/.env.testing"), true)
-  assert.equal(plugin.isProtectedEnvFile("/project/.env.example"), false)
-  assert.equal(plugin.isProtectedEnvFile("/project/config/database.php"), false)
+test("environment files are protected while examples remain readable", async () => {
+  await assert.rejects(readFileWithPlugin(".env"), /environment files/)
+  await assert.rejects(readFileWithPlugin("/project/.env.testing"), /environment files/)
+  await assert.doesNotReject(readFileWithPlugin("/project/.env.example"))
+  await assert.doesNotReject(readFileWithPlugin("/project/config/database.php"))
 })
 
 test("plugin hook rejects protected reads and unsafe commands", async () => {
-  const hooks = await plugin.BlockUnsafeCommands()
   await assert.rejects(
-    hooks["tool.execute.before"](
+    beforeToolExecution(
       { tool: "read" },
       { args: { filePath: "/project/.env.production" } },
     ),
     /environment files/,
   )
   await assert.rejects(
-    hooks["tool.execute.before"](
+    beforeToolExecution(
       { tool: "bash" },
       { args: { command: "pytest" } },
     ),
