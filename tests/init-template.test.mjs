@@ -42,12 +42,29 @@ const createFixture = (identity, features = [], featureDirectories = []) => {
   return directory
 }
 
-const runFixture = (identity, args = [], features = [], featureDirectories = []) => {
+const runFixture = (
+  identity,
+  args = [],
+  features = [],
+  featureDirectories = [],
+  environment = {},
+) => {
   const directory = createFixture(identity, features, featureDirectories)
   try {
+    const childEnvironment = {
+      ...process.env,
+      NO_COLOR: "",
+      CLICOLOR_FORCE: "0",
+      ...environment,
+    }
+    for (const [name, value] of Object.entries(childEnvironment)) {
+      if (value === undefined) delete childEnvironment[name]
+    }
+
     const result = spawnSync("bash", ["init.sh", ...args], {
       cwd: directory,
       encoding: "utf8",
+      env: childEnvironment,
     })
     return {
       status: result.status,
@@ -74,6 +91,47 @@ test("production identity fails before the product suite", () => {
   assert.equal(result.suiteRan, false)
   assert.match(result.output, /\[FAIL\] Database safety could not be proven/)
   assert.doesNotMatch(result.output, /production|db\.internal|customers/)
+})
+
+test("forced colors style successful gate labels", () => {
+  const result = runFixture(
+    { environment: "testing", host: "localhost", database: "app_test" },
+    [],
+    [],
+    [],
+    { CLICOLOR_FORCE: "1", NO_COLOR: undefined },
+  )
+
+  assert.equal(result.status, 0)
+  assert.match(result.output, /\x1b\[30;42m\[OK\]\x1b\[0m Database safety/)
+})
+
+test("NO_COLOR disables colors even when they are forced", () => {
+  const result = runFixture(
+    { environment: "testing", host: "localhost", database: "app_test" },
+    [],
+    [],
+    [],
+    { CLICOLOR_FORCE: "1", NO_COLOR: "" },
+  )
+
+  assert.equal(result.status, 0)
+  assert.doesNotMatch(result.output, /\x1b\[/)
+  assert.match(result.output, /\[OK\] Database safety/)
+})
+
+test("forced colors style Python validation failures", () => {
+  const features = [{ invalid: true }]
+  const result = runFixture(
+    { environment: "testing", host: "localhost", database: "app_test" },
+    [],
+    features,
+    [],
+    { CLICOLOR_FORCE: "1", NO_COLOR: undefined },
+  )
+
+  assert.equal(result.status, 1)
+  assert.match(result.output, /\x1b\[97;41m\[FAIL\]\x1b\[0m Every feature/)
 })
 
 test("malformed identity fails before the product suite", () => {

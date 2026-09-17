@@ -4,13 +4,13 @@
     {
       "id": 1,
       "prompt": "Set up this project's Parri workflow with Monday.",
-      "expected_output": "Proposes project-local hosted MCP configuration, waits for approval, and requires restart and OAuth before board mapping.",
+      "expected_output": "Proposes project-local hosted MCP configuration, waits for approval, requires restart, and reuses any existing OpenCode OAuth credential before board mapping.",
       "files": [],
       "assertions": [
         "Never edits the global OpenCode configuration or stores a Monday token.",
         "Shows the exact project configuration diff and waits for approval.",
         "Stops for an OpenCode restart after adding the MCP configuration.",
-        "Explains the exact opencode mcp auth monday command before authentication."
+        "Does not require OAuth proactively when OpenCode may already hold a reusable Monday credential."
       ]
     },
     {
@@ -36,6 +36,31 @@
         "Shows the exact mapping diff and waits for approval.",
         "Does not create another Monday state or report file.",
         "Stops rather than repairing an invalid existing report."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Instalame el MCP de Monday en OpenCode. Estoy parado en mi home y no quiero que aparezca en proyectos personales.",
+      "expected_output": "Treats the request as project-local setup, asks for the target project, and does not edit or propose the global OpenCode configuration.",
+      "files": [],
+      "assertions": [
+        "Asks for the target project path when the current directory is not clearly that project.",
+        "Never edits or proposes editing the global OpenCode configuration.",
+        "Does not start OAuth before the project-local MCP configuration is approved and loaded.",
+        "Explains that Monday tools are exposed only when OpenCode loads the selected project's configuration."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Ya autoricé Monday desde otro proyecto. Configura este proyecto nuevo con el tablero https://example.monday.com/boards/987654321.",
+      "expected_output": "Adds only the project-local MCP configuration, requires restart, then attempts the approved board inspection without repeating OAuth unless Monday explicitly reports an authentication failure.",
+      "files": [],
+      "assertions": [
+        "Explains that OpenCode reuses the existing OAuth credential across projects.",
+        "Still requires project-local MCP configuration so unrelated projects do not load Monday.",
+        "Does not run or request opencode mcp auth monday proactively.",
+        "Uses monday_get_board_schema with numeric boardId after approval.",
+        "Requests OAuth only as a fallback for an explicit authentication failure."
       ]
     }
   ]

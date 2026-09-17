@@ -11,7 +11,7 @@ Agree how future code should be built and persist that agreement in `docs/engine
 
 Read applicable `AGENTS.md` instructions, the existing `docs/engineering.md`, and engineering documentation they reference. Reuse decisions already established in the conversation rather than asking the user to repeat them.
 
-Inspect representative code in the area the user named. If the scope is the whole project, start with its structure and a representative end-to-end flow; expand only where a concrete decision needs more evidence. Delegate codebase searching and inspection to the `explore` subagent, using `quick` for a concrete lookup and `medium` for a flow across layers. Use `very thorough` only when explicitly requested.
+Inspect representative code in the area the user named. If the scope is the whole project, start with its structure and a representative end-to-end flow; expand only where a concrete decision needs more evidence.
 
 Distinguish observed patterns from desired rules. Existing code is evidence of the current state, not approval of its design. When documentation and code differ, explain the relevant difference without treating every legacy deviation as a decision to reopen. For a new project, work from the user's goals and constraints rather than inventing an existing structure.
 
@@ -19,7 +19,7 @@ Distinguish observed patterns from desired rules. Existing code is evidence of t
 
 Present a concise diagnosis and a concrete recommendation grounded in the project. Ask focused questions about unresolved choices, one at a time, with trade-offs and a recommended option. Do not run a fixed architecture questionnaire or impose a named architecture, extra layers, or abstractions by default.
 
-Focus on a handful of practical rules: where business logic belongs, what controllers handle, and any other responsibility or convention the user wants to establish. Do not expand this into a comprehensive architecture exercise.
+Focus on a handful of practical rules: where business logic belongs, how to structure components, controllers, services, models...
 
 Prefer simple, actionable rules over broad advice such as "use clean code." Discuss only topics relevant to this project. If the user has already resolved the decisions, synthesize them directly. Otherwise, confirm the proposed direction before persisting it; do not turn suggestions into agreed rules.
 
@@ -44,7 +44,7 @@ For example, if these decisions were agreed with the user:
 
 ## Conventions
 
-- Las pruebas validan comportamiento observable.
+- Los test validan comportamiento observable.
 - El código nuevo sigue estas reglas; el existente se adapta solo cuando la tarea lo necesita.
 ```
 

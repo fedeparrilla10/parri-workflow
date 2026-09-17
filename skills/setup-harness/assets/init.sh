@@ -8,9 +8,41 @@ ALLOWED_DB_NAMES_JSON='__PARRI_ALLOWED_DB_NAMES_JSON__'
 DATABASE_IDENTITY_COMMAND=(__PARRI_DATABASE_IDENTITY_COMMAND__)
 TEST_COMMAND=(__PARRI_TEST_COMMAND__)
 
-ok() { printf '[OK] %s\n' "$1"; }
-warn() { printf '[WARN] %s\n' "$1"; }
-fail() { printf '[FAIL] %s\n' "$1" >&2; }
+color_enabled() {
+  local file_descriptor="$1"
+
+  if [[ -n "${NO_COLOR+x}" ]]; then
+    return 1
+  fi
+  if [[ -n "${CLICOLOR_FORCE:-}" && "${CLICOLOR_FORCE}" != "0" ]]; then
+    return 0
+  fi
+  [[ -t "$file_descriptor" ]]
+}
+
+ok() {
+  if color_enabled 1; then
+    printf '\033[30;42m[OK]\033[0m %s\n' "$1"
+  else
+    printf '[OK] %s\n' "$1"
+  fi
+}
+
+warn() {
+  if color_enabled 1; then
+    printf '\033[30;43m[WARN]\033[0m %s\n' "$1"
+  else
+    printf '[WARN] %s\n' "$1"
+  fi
+}
+
+fail() {
+  if color_enabled 2; then
+    printf '\033[97;41m[FAIL]\033[0m %s\n' "$1" >&2
+  else
+    printf '[FAIL] %s\n' "$1" >&2
+  fi
+}
 
 if (( $# != 0 )); then
   fail "init.sh does not accept arguments"
@@ -50,7 +82,15 @@ import sys
 
 
 def stop(message):
-    print(f"[FAIL] {message}", file=sys.stderr)
+    color_enabled = (
+        "NO_COLOR" not in os.environ
+        and (
+            sys.stderr.isatty()
+            or os.environ.get("CLICOLOR_FORCE", "") not in {"", "0"}
+        )
+    )
+    label = "\033[97;41m[FAIL]\033[0m" if color_enabled else "[FAIL]"
+    print(f"{label} {message}", file=sys.stderr)
     raise SystemExit(1)
 
 

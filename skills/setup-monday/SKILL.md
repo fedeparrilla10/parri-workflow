@@ -1,15 +1,15 @@
 ---
 name: setup-monday
-description: Enable, validate, or reconfigure the optional Monday MCP integration for the current project. Use when the user asks to connect, configure, validate, or reconfigure this project's Parri workflow with Monday.
+description: Install, enable, validate, or reconfigure the Monday MCP only for the current project's Parri workflow. Use whenever the user mentions installing or connecting Monday MCP in OpenCode, including /setup-monday; never configure it globally.
 ---
 
 # Setup Monday
 
-Configure Monday only for the current project. This integration is optional and must not alter feature state, product code, `init.sh`, or existing harness artifacts other than `.ai/monday.json` and `.ai/monday-report.json`.
+Configure Monday only for the explicitly selected current project. This integration is optional and must not alter feature state, product code, `init.sh`, or existing harness artifacts other than `.ai/monday.json` and `.ai/monday-report.json`. A generic request to install the Monday MCP means project-local setup, never global installation.
 
 ## Preconditions
 
-Work from the project root. Require an existing `.ai/features.json`; otherwise stop and recommend setting up the harness. Never read `.env`, credential files, or stored OAuth tokens.
+Work from the target project root. If the current directory is not clearly the intended project, ask for its path and stop; do not fall back to the global OpenCode configuration. Require an existing `.ai/features.json`; otherwise stop and recommend setting up the harness. Never read `.env`, credential files, or stored OAuth tokens.
 
 Locate the applicable project OpenCode configuration in this order: `opencode.json`, `opencode.jsonc`, `.opencode/opencode.json`. Never edit the global configuration. If more than one project configuration exists, ask which one is authoritative. If none exists, propose creating `opencode.json`.
 
@@ -38,13 +38,15 @@ Ensure the project configuration contains this semantic configuration, merged wi
 
 Treat this as a configuration-file change: show the exact proposed diff, explain that it loads the hosted Monday MCP only in this project and denies its tools by default; the globally defined `monday-worker` has the sole agent-level override. Then wait for explicit approval before editing. Do not replace existing `$schema`, `mcp`, or `permission` siblings.
 
-After changing OpenCode configuration, stop and tell the user to quit and restart OpenCode. Authentication is a separate external-service operation. Show the exact command `opencode mcp auth monday`, explain that it opens Monday OAuth in the browser and stores the resulting credential in OpenCode's credential store, and wait for explicit confirmation before it is run. Ask the user to continue the Monday setup after restart and authentication.
-
 ## Select the board mapping
 
 When the `monday_*` tools are available, ask the user for the Monday board URL and extract its board ID. Ask whether a specific group should be used; `null` means Monday's default group.
 
-Before querying Monday, show the exact read-only MCP tool call and arguments, explain that it reads the selected board schema, and wait for explicit confirmation. After approval, launch `monday-worker` in `INSPECT_BOARD` mode with only the board ID; do not call `monday_*` tools directly. Use the returned board schema to select and verify:
+Before querying Monday, show the exact read-only MCP call as `monday_get_board_schema` with arguments `{ "boardId": <numeric-board-id> }`, explain that it reads the selected board schema, and wait for explicit confirmation. After approval, launch `monday-worker` in `INSPECT_BOARD` mode with only the board ID; do not call `monday_*` tools directly. Keep this internal delegation out of the user-facing flow unless it fails or the user asks about it.
+
+If inspection fails specifically because Monday requires authentication, show the exact command `opencode mcp auth monday`, explain that it opens Monday OAuth in the browser and stores the credential in OpenCode's credential store, and wait for explicit confirmation before running it. After successful authentication, retry the already-approved inspection. Do not treat an unavailable MCP tool as an authentication failure; tell the user to verify that OpenCode was restarted from the project after configuration.
+
+Use the returned board schema to select and verify:
 
 - one Status column and the numeric index of the label that means done;
 - one Numbers column that stores decimal hours;
@@ -87,6 +89,6 @@ Initialize `.ai/monday-report.json` only when absent:
 
 Never change or remove existing successful entries while configuring Monday. Stop rather than repairing an invalid existing report.
 
-Show the exact proposed diffs and wait for explicit approval before writing either file. Do not create any other Monday state or report file.
+Before showing the diffs, explain that `.ai/monday.json` stores the verified project mapping and `.ai/monday-report.json` records successful item creations for traceability. Show the exact proposed diffs and wait for explicit approval before writing either file. Do not create any other Monday state or report file.
 
 Finish with the selected board, group, status label, and hours column. Remind the user that completed features will ask for decimal hours and explicit approval before creating an item.
