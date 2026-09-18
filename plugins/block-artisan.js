@@ -46,11 +46,11 @@ const blockedCommand = (command) => {
 export const BlockUnsafeCommands = async () => ({
   "tool.execute.before": async (input, output) => {
     if (
-      input.tool === "read" &&
+      (input.tool === "read" || input.tool === "edit") &&
       isProtectedEnvFile(output.args.filePath ?? output.args.path)
     ) {
       throw new Error(
-        "BLOCKED: AI agents are not allowed to read environment files.",
+        "BLOCKED: AI agents are not allowed to read or modify environment files.",
       );
     }
 
